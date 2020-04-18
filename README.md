@@ -18,7 +18,7 @@ Key highlights:
 2. Enjoy!  (The license here is MIT so you can use this in any project, commercial or open source).
 
 ### Quick Example (Client Side)
-Note that this example is to illustrate how to use `WebSocket::Wrapper`, and some key things have been omitted (such as handling all possible failures and/or cleaning up resources on all possible failure modes, etc). 
+Note that this example is to illustrate how to use `WebSocket::Wrapper`, and some key things have been omitted (such as handling all possible failures and/or cleaning up resources on all possible failure modes, etc).
 
 ```c++
 #include "WebSocket.h"
@@ -31,7 +31,7 @@ QTcpSocket *sock = new QTcpSocket(this);
 connect(sock, &QTcpSocket::connected, this, [this, sock]{
     // create the socket wrapper
     auto websock = new WebSocket::Wrapper(sock, this);
-    // 'sock' is now reparented to 'websock', and 'websock' wraps 'sock'.
+    // 'sock' is now a child of 'websock' ('websock' wraps 'sock').
     // (do not use 'sock' directly anymore, instead use 'websock').
 
     // We will start the handshake process below:
@@ -39,9 +39,10 @@ connect(sock, &QTcpSocket::connected, this, [this, sock]{
     // register the success signal (emitted if the handshake succeeds)
     connect(websock, &WebSocket::Wrapper::handshakeSuccess, this, [this, websock]{
        // save the active socket here and use it...
-       // At this point the conneciton is "speaking" the web socket
-       // You can call websock->write(), to send
-       // Use the `messagesReady()` or `readyReady()` signal to receive
+       // At this point the conneciton is "speaking" the web socket protocol
+       // You can call websock->write(), to send.
+       // Use the `messagesReady()` or `readyRead()` signals to receive framed
+       // messages.
        this->connectedSock = websock;
        // use it.... emit a signal here, etc...
     });
@@ -66,7 +67,7 @@ sock->connectToHost(someHost, somePort);
 ```
 
 ### Quick Example (Server Side)
-Note that this example is to illustrate how to use `WebSocket::Wrapper`, and some key things have been omitted (such as handling all possible failures and/or cleaning up resources on all possible failure modes, etc). 
+Note that this example is to illustrate how to use `WebSocket::Wrapper`, and some key things have been omitted (such as handling all possible failures and/or cleaning up resources on all possible failure modes, etc).
 
 ```c++
 #include <QTcpServer>
