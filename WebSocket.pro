@@ -3,6 +3,7 @@ QT += network
 
 TEMPLATE = lib
 DEFINES += WEBSOCKET_LIBRARY
+VERSION = 1.0.0
 
 CONFIG += c++17
 
