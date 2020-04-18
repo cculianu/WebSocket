@@ -18,9 +18,9 @@ Key highlights:
 2. Enjoy!  (The license here is MIT so you can use this in any project, commercial or open source).
 
 ### Quick Example (Client Side)
-Note that this example is to illustrate how to use `WebSocket::Wrapper`, and some key things have been omitted (such as handling all possible failures and/or cleaning up resources on all possible failure modes, etc). [Syntax highlighted version here](example/client-side.cpp).
+Note that this example is to illustrate how to use `WebSocket::Wrapper`, and some key things have been omitted (such as handling all possible failures and/or cleaning up resources on all possible failure modes, etc).
 
-```
+```cpp
 #include "WebSocket.h"
 
 // ... and somewhere in your code:
@@ -66,9 +66,9 @@ sock->connectToHost(someHost, somePort);
 ```
 
 ### Quick Example (Server Side)
-Note that this example is to illustrate how to use `WebSocket::Wrapper`, and some key things have been omitted (such as handling all possible failures and/or cleaning up resources on all possible failure modes, etc). [Syntax highlighted version here](example/server-side.cpp).
+Note that this example is to illustrate how to use `WebSocket::Wrapper`, and some key things have been omitted (such as handling all possible failures and/or cleaning up resources on all possible failure modes, etc).
 
-```
+```cpp
 #include <QTcpServer>
 #include "WebSocket.h"
 
