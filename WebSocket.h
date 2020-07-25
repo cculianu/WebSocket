@@ -259,7 +259,7 @@ namespace WebSocket
                 explicit ClientServerBase(QTcpSocket * /* may not be nullptr */);
                 ~ClientServerBase() override;
 
-                static constexpr int kDefaultTimeout = 10000, // 10s handshake timeout default
+                static constexpr int kDefaultTimeout = 10000, ///< 10s handshake timeout default
                                      kDefaultMaxHeaders = 8192;
 
                 /// Get the underlying socket.
@@ -295,6 +295,7 @@ namespace WebSocket
 
                 int nread = 0;
                 QHash<QString, QString> headers;
+                bool checkHeaders(QString *what = nullptr) const;
 
                 /// called from derived classes' start(), returns false if should abort start(), emits failure(reason)
                 /// on false return.  On true return, sets up some private signal/slot connections for emitting failure
