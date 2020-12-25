@@ -104,9 +104,9 @@ void MyTcpServer::incomingConnection(qintptr socketDescriptor)
 }
 ```
 
-### TODO
+### More examples
 
- - Offer up some more concrete examples.cpp and perhaps a sample application.
+Please see the [examples/](examples/) subdiectory for a sample "hello world" Client and Server application.
 
 License
 ----
