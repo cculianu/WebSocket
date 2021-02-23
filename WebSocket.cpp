@@ -460,7 +460,7 @@ namespace WebSocket
                     // note that this should not normally get triggered as we guard for it above already, but this
                     // was left in for defensive programming.
                     throw ProtocolError(QString("%1: Unexpected state in processing frame -- type=%2 tmpFrame=%3")
-                                        .arg(__FUNCTION__ ).arg(pfi->type).arg(tmpFrame ? "valid" : "invalid"));
+                                        .arg(__func__).arg(pfi->type).arg(tmpFrame ? "valid" : "invalid"));
 
                 // guard against ridiculously big messages that exceed QByteArray size limits
                 if (std::size_t(tmpFrame->payload.length()) + pfi->srcPayloadLen() > std::size_t(std::numeric_limits<int>::max()))
@@ -476,7 +476,7 @@ namespace WebSocket
             }
             if (tmpFrame)
                 // code above should guard against this -- this should never happen
-                throw InternalError(QString("%1: Unexpected state -- tmpFrame was not pushed back .. FIXME!").arg(__FUNCTION__));
+                throw InternalError(QString("%1: Unexpected state -- tmpFrame was not pushed back .. FIXME!").arg(__func__));
 
             // finally, copy back pieces of data we didn't process so that the `buf` arg now only contains unprocessed data.
             {
@@ -715,7 +715,7 @@ namespace WebSocket
             } // end function ClientServerBase::startCommon
 
             // --- ClientSide
-            ClientSide::~ClientSide() { /*qDebug("%s", __FUNCTION__);*/ }
+            ClientSide::~ClientSide() { /*qDebug("%s", __func__);*/ }
 
             void ClientSide::start(const QString &resourceName, const QString &host, const QString &origin, int timeout)
             {
@@ -735,6 +735,7 @@ namespace WebSocket
                 expectedDigest = QString::fromLatin1(QCryptographicHash::hash(secKey + UUID, QCryptographicHash::Algorithm::Sha1).toBase64());
 
 
+                const auto originTrimmed = origin.trimmed();
                 // -- send header
                 const QByteArray header =
                     QStringLiteral(
@@ -746,10 +747,10 @@ namespace WebSocket
                         "Sec-WebSocket-Key: %4\r\n"
                         "Sec-WebSocket-Version: 13\r\n"
                         "\r\n"
-                    ).arg(resourceName.trimmed())
-                     .arg(host.trimmed())
-                     .arg(origin.trimmed().isEmpty() ? QString() : QStringLiteral("Origin: %1\r\n").arg(origin.trimmed()))
-                     .arg(QString::fromLatin1(secKey)).toLatin1();
+                    ).arg(resourceName.trimmed(),
+                          host.trimmed(),
+                          originTrimmed.isEmpty() ? QString() : QStringLiteral("Origin: %1\r\n").arg(originTrimmed),
+                          QString::fromLatin1(secKey)).toLatin1();
                 //qDebug("Sending header:\n%s", header.constData());
                 sock->write(header);
             } // end function ClientSide::start
@@ -798,7 +799,7 @@ namespace WebSocket
                         const bool ok = checkHeaders();
                         if (QString gotKey;
                                 ok && (gotKey=headers.value(QStringLiteral("sec-websocket-accept"))) != expectedDigest)
-                            Fail(QString("Bad key: expected '%1', got '%2'").arg(QString(expectedDigest)).arg(gotKey));
+                            Fail(QString("Bad key: expected '%1', got '%2'").arg(QString(expectedDigest), gotKey));
                         if (ok) {
                             qDebug("Successful websocket handshake to host %s:%hu", sock->peerName().toLatin1().constData(), sock->peerPort());
                             {
@@ -853,7 +854,7 @@ namespace WebSocket
                             "Content-Type: text/plain\r\n"
                             "Connection: close\r\n\r\n"
                             "%4"
-                        ).arg(code).arg(reason).arg(content.size()).arg(QString::fromLatin1(content)).toLatin1();
+                        ).arg(QString::number(code), reason, QString::number(content.size()), QString::fromLatin1(content)).toLatin1();
                         sock->write(resp);
                         sock->flush();
                         throw Exception(what);
@@ -907,6 +908,7 @@ namespace WebSocket
                             constexpr auto GetHTTPDate = []{
                                 return QLocale::c().toString(QDateTime::currentDateTime(), u"ddd, dd MMM yyyy hh:mm:ss 'GMT'");
                             };
+                            const auto serverAgentTrimmed = serverAgent.trimmed();
                             const QByteArray header =
                                 QStringLiteral(
                                     "HTTP/1.1 101 Switching Protocols\r\n"
@@ -916,10 +918,9 @@ namespace WebSocket
                                     "%2" // may be empty or may be "Server: serverAgent\r\n"
                                     "Date: %3\r\n"
                                     "\r\n"
-                                ).arg(QString(QCryptographicHash::hash(key + UUID, QCryptographicHash::Algorithm::Sha1).toBase64()))
-                                 .arg(serverAgent.trimmed().isEmpty() ? QString() : QStringLiteral("Server: %1\r\n").arg(serverAgent.trimmed()))
-                                 .arg(GetHTTPDate())
-                                 .toLatin1();
+                                ).arg(QString(QCryptographicHash::hash(key + UUID, QCryptographicHash::Algorithm::Sha1).toBase64()),
+                                      serverAgentTrimmed.isEmpty() ? QString() : QStringLiteral("Server: %1\r\n").arg(serverAgentTrimmed),
+                                      GetHTTPDate()).toLatin1();
                             //qDebug("Sending response header:\n%s", header.constData());
                             sock->write(header);
                         }
