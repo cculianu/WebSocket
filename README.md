@@ -106,7 +106,8 @@ void MyTcpServer::incomingConnection(qintptr socketDescriptor)
 
 ### More examples
 
-Please see the [examples/](examples/) subdiectory for a sample "hello world" Client and Server application.
+Please see the [examples/](examples/) subdiectory for the sample "TestEchoClientServer" stand-alone CLI program for testing,
+as well as a user-contributed sample application.  More examples coming soon!
 
 License
 ----
