@@ -32,10 +32,10 @@
 #include <QTcpSocket>
 
 #include <cstddef>
-#include <stdexcept>
 #include <exception>
 #include <list>
 #include <optional>
+#include <stdexcept>
 
 #ifdef __clang__
 #pragma clang diagnostic push
