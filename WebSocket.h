@@ -32,6 +32,7 @@
 #include <QTcpSocket>
 
 #include <cstddef>
+#include <stdexcept>
 #include <exception>
 #include <list>
 #include <optional>
@@ -50,16 +51,16 @@ class QTimer;
 namespace WebSocket
 {
     /// All exceptions thrown by the code below are derived from this base type.
-    struct Exception : public std::runtime_error { Exception(const QString &s); ~Exception() override; };
+    struct Exception : public std::runtime_error { Exception(const QString &s); ~Exception(); };
     /// May be thrown by the various Ser and Deser functions if the arguments supplied are bad.
-    struct BadArgs : public Exception { using Exception::Exception; ~BadArgs() override; };
+    struct BadArgs : public Exception { using Exception::Exception; ~BadArgs(); };
     /// May be thrown in rare cases if there are assertion failure in the code (shouldn't normally happen).
-    struct InternalError : public Exception { using Exception::Exception; ~InternalError() override; };
+    struct InternalError : public Exception { using Exception::Exception; ~InternalError(); };
     /// All higher level errors are a type of this exception (but some functions may throw BadArgs or InternalError
     /// as well)
-    struct Error : public Exception { using Exception::Exception; ~Error() override; };
+    struct Error : public Exception { using Exception::Exception; ~Error(); };
     /// Thrown if the parsed or generated data exceeds INT_MAX
-    struct MessageTooBigError : public Error { using Error::Error; ~MessageTooBigError() override; };
+    struct MessageTooBigError : public Error { using Error::Error; ~MessageTooBigError(); };
 
     /// Default to 4096-byte fragments.
     inline constexpr std::size_t DefaultFragmentSize = 4096;
@@ -212,7 +213,7 @@ namespace WebSocket
         };
 
         /// Thrown if the incoming wire data is out-of-spec and/or invalid.
-        struct ProtocolError : public Error { using Error::Error; ~ProtocolError() override; };
+        struct ProtocolError : public Error { using Error::Error; ~ProtocolError(); };
 
         enum MaskEnforcement {
             DontCare = 0,
