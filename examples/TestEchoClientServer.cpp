@@ -1,7 +1,7 @@
 #include "../WebSocket.h"
 #include <QFile>
 #include <QHostAddress>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTcpServer>
 #include <QSslCertificate>
 #include <QSslConfiguration>
@@ -61,13 +61,14 @@ int main(int argc, char *argv[])
         // stand alone test encoding / decoding
         std::cout << "Enter text:\n";
         std::array<char, 65536> linebuf;
-        const QRegExp hexRE("^[0-9a-fA-F]+$");
+        const QRegularExpression hexRE("^[0-9a-fA-F]+$");
         while ( std::cin.getline(linebuf.data(), linebuf.size()) ) {
             QByteArray b = QByteArray(linebuf.data()).trimmed();
             QByteArray frameData;
 
             try {
-                if (hexRE.exactMatch(b)) {
+                if (hexRE.match(b).hasMatch()) {
+                    // input was some hex encoded data
                     frameData = QByteArray::fromHex(b);
                 } else {
                     frameData = WebSocket::Ser::wrapText(b, true, 260);
@@ -300,7 +301,7 @@ int main(int argc, char *argv[])
                         qDebug("Got text frame [%s], echoing back", f.payload.constData());
                         sock->sendText(QByteArray("ECHO ") + f.payload);
                     } else {
-                        qDebug("Got data frame [%d bytes], echoing back", f.payload.size());
+                        qDebug("Got data frame [%d bytes], echoing back", int(f.payload.size()));
                         sock->sendBinary(f.payload);
                     }
                 }

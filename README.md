@@ -1,6 +1,6 @@
 # Web Socket
 
-A lightweight RFC 6455 (Web Socket) implementation for Qt5 by Calin Culianu <calin.culianu@gmail.com>
+A lightweight RFC 6455 (Web Socket) implementation for Qt5 & Qt6 by Calin Culianu <calin.culianu@gmail.com>
 
 Key highlights:
   - Supports both `ws://` and `wss://` Web Sockets.
